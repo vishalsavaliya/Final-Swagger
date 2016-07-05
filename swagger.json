@@ -1,0 +1,2676 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "DataDudu API Documentation",
+        "description": "Authentication Information<br> <br> **token_id** is for internal use only – used for web portal access after user login from website  <br> <br> **account_key** is for public/users to use externally – for updating channels and data through the API <br> <br>**Device Information** <br><br> **activation_code** The code submitted to DataDudu by a device with Internet connectivity when the device powers on (“wakes up”). The Activate Device API stores the activation code and activation date as attributes of the device in the database and returns the channel_id and api_key to the device. A device creates its activation code by executing firmware instructions that use the HMAC-SHA1 algorithm to create a unique, non-guessable ID, based on the serial number of the device and the product secret stored in the device’s firmware. <br><br>**Product Secret** A random hex string automatically generated when a product is created in the provisioning system. The product secret is used in the activation process. <br> <br> **Timezone Information** <br><br> To Get the List of Timezones http://api.datadudu.com/constants/timezones",
+        "version": "1.0.0"
+    },
+    "host": "api.datadudu.com",
+    "tags": [
+        {
+            "name": "Accounts",
+            "description": "Everything about your Accounts",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://swagger.io"
+            }
+        },
+        {
+            "name": "Channels",
+            "description": "Access to Channels"
+        },
+        {
+            "name": "Products",
+            "description": "Everything about your Accounts",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "http://swagger.io"
+            }
+        },
+        {
+            "name": "Devices",
+            "description": "Everything about your Devices"
+        }
+    ],
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/accounts/create": {
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create User Account (Internal)",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Username of DataDudu",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": true,
+                        "type": "string",
+                        "format": "password"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email Address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Enter Timezone",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Captcha",
+                        "in": "query",
+                        "description": "Captch Image",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "result": {
+                                    "type": "string"
+                                },
+                                "user": {
+                                    "type": "object",
+                                    "properties": {
+                                        "username": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "account_key": {
+                                            "type": "string",
+                                            "description": "account_key is used for managing channels through the API."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/login": {
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "User Account Login (Internal)",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Username of DataDudu",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": true,
+                        "type": "string",
+                        "format": "password"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "result": {
+                                    "type": "string"
+                                },
+                                "token_id": {
+                                    "type": "string",
+                                    "description": "token_id will be used for account management only through web portal internally."
+                                },
+                                "expire_time": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/update": {
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update User Account (Internal)",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "current user_id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Username of DataDudu",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": true,
+                        "type": "string",
+                        "format": "password"
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "query",
+                        "description": "Password",
+                        "required": false,
+                        "type": "string",
+                        "format": "password"
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email Address",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Enter Timezone",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Captcha",
+                        "in": "query",
+                        "description": "Captch Image",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "result": {
+                                    "type": "string"
+                                },
+                                "user": {
+                                    "type": "object",
+                                    "properties": {
+                                        "username": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "account_key": {
+                                            "type": "string",
+                                            "description": "account_key is used for managing channels through the API."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/update/public": {
+            "post": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update User Public Profile (Internal)",
+                "parameters": [
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "website",
+                        "in": "query",
+                        "description": "Website URL",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "bio",
+                        "in": "query",
+                        "description": "Information",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "public_flag",
+                        "in": "query",
+                        "description": "Whether to make profile public",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/accounts/view": {
+            "get": {
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "View User Account (Internal)",
+                "parameters": [
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "List Account Channels",
+                "parameters": [
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Create a Channel",
+                "parameters": [
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Description of the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "elevation",
+                        "in": "query",
+                        "description": "Elevation in meters",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "field1",
+                        "in": "query",
+                        "description": "Field1 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field2",
+                        "in": "query",
+                        "description": "Field2 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field3",
+                        "in": "query",
+                        "description": "Field3 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field4",
+                        "in": "query",
+                        "description": "Field4 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field5",
+                        "in": "query",
+                        "description": "Field5 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field6",
+                        "in": "query",
+                        "description": "Field6 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field7",
+                        "in": "query",
+                        "description": "Field7 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field8",
+                        "in": "query",
+                        "description": "Field8 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "Latitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "Longitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "metadata",
+                        "in": "query",
+                        "description": "Metadata for the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "public_flag",
+                        "in": "query",
+                        "description": "Whether the Channel should be public",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Comma-separated list of tags",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "description": "Webpage URL for the Channel",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/public": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "List Public Channels",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Search By Username",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Search By Tag",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}": {
+            "put": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Update a Channel",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Description of the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "elevation",
+                        "in": "query",
+                        "description": "Elevation in meters",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "field1",
+                        "in": "query",
+                        "description": "Field1 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field2",
+                        "in": "query",
+                        "description": "Field2 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field3",
+                        "in": "query",
+                        "description": "Field3 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field4",
+                        "in": "query",
+                        "description": "Field4 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field5",
+                        "in": "query",
+                        "description": "Field5 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field6",
+                        "in": "query",
+                        "description": "Field6 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field7",
+                        "in": "query",
+                        "description": "Field7 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field8",
+                        "in": "query",
+                        "description": "Field8 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "Latitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "Longitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "metadata",
+                        "in": "query",
+                        "description": "Metadata for the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of the Channel",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "public_flag",
+                        "in": "query",
+                        "description": "Whether the Channel should be public",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Comma-separated list of tags",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "description": "Webpage URL for the Channel",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Delete a Channel",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/update": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Update a Channel Feed (Add New Data Points)",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "api_key is unique Write API key for each channel used for updating feed data.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "execute",
+                        "in": "query",
+                        "description": "true/false if true, system will Update the channel feed and Execute the Next Channel Command",
+                        "required": true,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "field1",
+                        "in": "query",
+                        "description": "Field1 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field2",
+                        "in": "query",
+                        "description": "Field2 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field3",
+                        "in": "query",
+                        "description": "Field3 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field4",
+                        "in": "query",
+                        "description": "Field4 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field5",
+                        "in": "query",
+                        "description": "Field5 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field6",
+                        "in": "query",
+                        "description": "Field6 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field7",
+                        "in": "query",
+                        "description": "Field7 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field8",
+                        "in": "query",
+                        "description": "Field8 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "Latitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "Longitude in degrees",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "elevation",
+                        "in": "query",
+                        "description": "Elevation in meters",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status update message",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "created_at",
+                        "in": "query",
+                        "description": "Date when this feed entry was created, in ISO 8601<br> format such as YYYY-MM-dd'T'HH:mm:ss'Z' or YYYY-MM-DD%20HH:NN:SS.<br> For example: 2015-12-05T13:11:59Z, 2015-12-05%2013:11:59",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/update.json": {
+            "post": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Update a Channel Feed (Multiple Data Points through JSON)",
+                "consumes": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "api_key is unique Write API key for each channel used for updating feed data.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "execute",
+                        "in": "query",
+                        "description": "true/false if true, system will Update the channel<br> feed and Execute the Next Channel Command",
+                        "required": true,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Request Payload Body needs to be in JSON format",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/feeds"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/feeds": {
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Clear a Channel",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "account_key is User's account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Get a Channel Feed (Get Data Points)",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "results",
+                        "in": "query",
+                        "description": "Number of entries to retrieve",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "End date",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "True/False",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Time Zones Reference for this request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "min",
+                        "in": "query",
+                        "description": "Minimum value to include in response",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "description": "Maximum value to include in response",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "sum",
+                        "in": "query",
+                        "description": "Get sum of this many minutes",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "round",
+                        "in": "query",
+                        "description": "Round to this many decimal places",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "average",
+                        "in": "query",
+                        "description": "Get average of this many minutes",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "Function name to be used for JSONP cross-domain requests",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/feeds/last": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Get Last Entry in a Channel Feed",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Time Zones Reference for this request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "Function name to be used for JSONP cross-domain requests",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/feeds/{ENTRY_ID}": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Get Specific Entry in a Channel",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ENTRY_ID",
+                        "in": "path",
+                        "description": "Replacing ENTRY_ID with the ID of your entry.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Time Zones Reference for this request",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "callback",
+                        "in": "query",
+                        "description": "Function name to be used for JSONP cross-domain requests",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/api_keys?action=list": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "List Channel API_Keys",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/accounts/api_keys?action=generate_account_key": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Generate New ACCOUNT KEY",
+                "parameters": [
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/api_keys?action=generate_write_key": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Generate New Channel Write KEY",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/api_keys?action=generate_read_key": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Generate New Channel READ KEY",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "generate_read_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "note",
+                        "in": "query",
+                        "description": "Note or description of the read_key",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/api_keys?action=update_read_key": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Update a Channel READ KEY",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "update_read_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "read_key",
+                        "in": "query",
+                        "description": "The read_key that you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "note",
+                        "in": "query",
+                        "description": "The description or note of the read_key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/api_keys?action=delete_read_key": {
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Delete a Channel READ KEY",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "account_key",
+                        "in": "query",
+                        "description": "User's Account key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "delete_read_key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "read_key",
+                        "in": "query",
+                        "description": "The read_key that you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/commands": {
+            "post": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Add a Channel Command",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "command_string",
+                        "in": "query",
+                        "description": "Command to be sent to your device",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "position",
+                        "in": "query",
+                        "description": "The position you want this command to appear in.",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "List All of a Channel’s Commands",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Delete All of a Channel’s Commands",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/commands/{COMMAND_ID}": {
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "To delete a channel’s single command by command_id",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "COMMAND_ID",
+                        "in": "path",
+                        "description": "Replacing COMMAND_ID with the ID of your command.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Get a Channel Command",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "COMMAND_ID",
+                        "in": "path",
+                        "description": "Replacing COMMAND_ID with the ID of your command.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a Product Batch",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "api_key is User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Product Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Product description",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field1",
+                        "in": "query",
+                        "description": "Field1 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field2",
+                        "in": "query",
+                        "description": "Field2 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field3",
+                        "in": "query",
+                        "description": "Field3 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field4",
+                        "in": "query",
+                        "description": "Field4 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field5",
+                        "in": "query",
+                        "description": "Field5 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field6",
+                        "in": "query",
+                        "description": "Field6 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field7",
+                        "in": "query",
+                        "description": "Field7 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field8",
+                        "in": "query",
+                        "description": "Field8 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "metadata",
+                        "in": "query",
+                        "description": "Channel templates",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "It is use to List All My Product Batch",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/public-products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Search Public Product Batches",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Search by product name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "View a Product Batch",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update a Product Batch",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "api_key is User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "token_id  is obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Product Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Product description",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field1",
+                        "in": "query",
+                        "description": "Field1 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field2",
+                        "in": "query",
+                        "description": "Field2 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field3",
+                        "in": "query",
+                        "description": "Field3 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field4",
+                        "in": "query",
+                        "description": "Field4 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field5",
+                        "in": "query",
+                        "description": "Field5 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field6",
+                        "in": "query",
+                        "description": "Field6 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field7",
+                        "in": "query",
+                        "description": "Field7 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field8",
+                        "in": "query",
+                        "description": "Field8 Name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "metadata",
+                        "in": "query",
+                        "description": "Channel templates",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a Product Batch",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}/devices": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Add Device Serials",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List Devices of a Product Batch",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}/devices/{SERIAL}/attach": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Attach a Device (using Product_ID and Serial to my account)",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "SERIAL",
+                        "in": "path",
+                        "description": "SERIAL",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/devices/{ACTIVATION_CODE}/attach": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Attach a Device (using Activation_Code to my account)",
+                "parameters": [
+                    {
+                        "name": "ACTIVATION_CODE",
+                        "in": "path",
+                        "description": "ACTIVATION_CODE",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}/devices/{SERIAL}/detach": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Detach a Device (using Product_ID and Serial to my account)",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "Product Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "SERIAL",
+                        "in": "path",
+                        "description": "SERIAL",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/devices/{ACTIVATION_CODE}/detach": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Detach a Device (using Activation_Code to my account)",
+                "parameters": [
+                    {
+                        "name": "ACTIVATION_CODE",
+                        "in": "path",
+                        "description": "ACTIVATION_CODE",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}/devices/{SERIAL}/activate": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Activate a Device (using Product_ID and Serial to my account)",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "PRODUCT_ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "SERIAL",
+                        "in": "path",
+                        "description": "SERIAL",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/devices/{ACTIVATION_CODE}/activate": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Activate a Device (using Activation_Code to my account)",
+                "parameters": [
+                    {
+                        "name": "ACTIVATION_CODE",
+                        "in": "path",
+                        "description": "ACTIVATION_CODE",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/products/{PRODUCT_ID}/devices/{SERIAL}/delete": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Delete a Device (using Product_ID and Serial to my account)<br>Note: Attached or Activated device cannot be deleted",
+                "parameters": [
+                    {
+                        "name": "PRODUCT_ID",
+                        "in": "path",
+                        "description": "PRODUCT_ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "SERIAL",
+                        "in": "path",
+                        "description": "SERIAL",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/devices/{ACTIVATION_CODE}/delete": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "Delete a Device (using Activation_Code to my account)<br>Note: Attached or Activated device cannot be deleted",
+                "parameters": [
+                    {
+                        "name": "ACTIVATION_CODE",
+                        "in": "path",
+                        "description": "ACTIVATION_CODE",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/devices": {
+            "get": {
+                "tags": [
+                    "Devices"
+                ],
+                "summary": "List My Devices (devices that have been attached or activated)",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/rules": {
+            "post": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Add a Channel Rule",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Choose between [numeric, string, no_data_check]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field",
+                        "in": "query",
+                        "description": "Choose between [field1, field2, field3, field4, field5, field6, field7, field8, status]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action_frequency",
+                        "in": "query",
+                        "description": "choose between [change_only, always]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "criteria",
+                        "in": "query",
+                        "description": "for type is “numeric”, choose between [>,>=,<,<=,==,!=]<br> for type is “string”, choose between [contains, starts_with,  ends_with, equal, not_equal, equal_ignore_case]<br>  for type is “no_data_check”, WILL ADD LATER",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "condition",
+                        "in": "query",
+                        "description": "value for the criteria",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "List Channel Rules",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Delete All Channel Rules",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/channels/{CHANNEL_ID}/rules/{RULE_ID}": {
+            "put": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Update a Channel Rule",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "RULE_ID",
+                        "in": "path",
+                        "description": "Replacing RULE_ID with the ID of your rule",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Choose between [numeric, string, no_data_check]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "field",
+                        "in": "query",
+                        "description": "Choose between [field1, field2, field3, field4, field5, field6, field7, field8, status]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action_frequency",
+                        "in": "query",
+                        "description": "choose between [change_only, always]",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "criteria",
+                        "in": "query",
+                        "description": "for type is “numeric”, choose between [>,>=,<,<=,==,!=]<br> for type is “string”, choose between [contains, starts_with,  ends_with, equal, not_equal, equal_ignore_case]<br>  for type is “no_data_check”, WILL ADD LATER",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "condition",
+                        "in": "query",
+                        "description": "value for the criteria",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "View a Channel Rule",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "RULE_ID",
+                        "in": "path",
+                        "description": "Replacing RULE_ID with the ID of your rule",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Channels"
+                ],
+                "summary": "Delete a Channel Rule",
+                "parameters": [
+                    {
+                        "name": "CHANNEL_ID",
+                        "in": "path",
+                        "description": "Replacing CHANNEL_ID with the ID of your channel",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "RULE_ID",
+                        "in": "path",
+                        "description": "Replacing RULE_ID with the ID of your rule",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "description": "User's API key",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "token_id",
+                        "in": "query",
+                        "description": "Obtained through login API",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "feeds": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/obj"
+            },
+            "xml": {
+                "name": "feeds"
+            }
+        },
+        "obj": {
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date when this feed entry was created, in ISO 8601 format such as YYYY-MM-dd'T'HH:mm:ss'Z' or YYYY-MM-DD%20HH:NN:SS. For example: 2015-12-05T13:11:59Z, 2015-12-05%2013:11:59."
+                },
+                "field1": {
+                    "type": "string",
+                    "description": "Field1 name."
+                },
+                "field2": {
+                    "type": "string",
+                    "description": "Field2 name."
+                },
+                "field3": {
+                    "type": "string",
+                    "description": "Field3 name."
+                },
+                "field4": {
+                    "type": "string",
+                    "description": "Field4 name."
+                },
+                "field5": {
+                    "type": "string",
+                    "description": "Field5 name."
+                },
+                "field6": {
+                    "type": "string",
+                    "description": "Field6 name."
+                },
+                "field7": {
+                    "type": "string",
+                    "description": "Field7 name."
+                },
+                "field8": {
+                    "type": "string",
+                    "description": "Field8 name."
+                },
+                "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Latitude in degrees."
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Longitude in degrees."
+                },
+                "elevation": {
+                    "type": "integer",
+                    "description": "Elevation in meters."
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Status update message."
+                }
+            },
+            "xml": {
+                "name": "obj"
+            }
+        }
+    }
+}
